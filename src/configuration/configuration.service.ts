@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, ValidationPipeOptions, VersioningOptions, VersioningType } from "@nestjs/common";
 import { CorsOptions, CorsOptionsDelegate } from "@nestjs/common/interfaces/external/cors-options.interface";
 import { ConfigService } from "@nestjs/config";
 import { Environment, EnvironmentVariables } from "src/constants/env.constants";
@@ -20,7 +20,7 @@ export class ConfigurationService {
   } {
     return {
       environment: this.config.get("NODE_ENV") ?? Environment.Development,
-      port: this.config.get("PORT") ?? 5432
+      port: this.config.get("PORT") ?? 5432,
     }
   }
 
@@ -51,6 +51,23 @@ export class ConfigurationService {
       description: "Example description.",
       version: "0.0.1",
       endpointName: "docs"
+    }
+  }
+
+  get validationPipeConfig(): ValidationPipeOptions {
+    return {
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+      whitelist: true,
+    }
+  }
+
+  get versioningConfig(): VersioningOptions {
+    return {
+      type: VersioningType.URI,
+      defaultVersion: "1"
     }
   }
 }
