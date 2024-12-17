@@ -15,8 +15,8 @@ export class ConfigurationService {
   }
 
   get appConfig(): {
-    port: number,
-    environment: Environment
+    port: number;
+    environment: Environment;
   } {
     return {
       environment: this.config.get("NODE_ENV") ?? Environment.Development,
