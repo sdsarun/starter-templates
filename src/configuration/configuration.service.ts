@@ -1,7 +1,7 @@
 import { Injectable, ValidationPipeOptions, VersioningOptions, VersioningType } from "@nestjs/common";
 import { CorsOptions, CorsOptionsDelegate } from "@nestjs/common/interfaces/external/cors-options.interface";
 import { ConfigService } from "@nestjs/config";
-import { Environment, EnvironmentVariables } from "src/constants/env.constants";
+import { Environment, EnvironmentVariables } from "src/shared/constants/env.constant";
 
 @Injectable()
 export class ConfigurationService {
