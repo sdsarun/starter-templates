@@ -23,17 +23,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const request = ctx.getRequest();
     const response = ctx.getResponse();
 
-    const httpStatus =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR;
-
-    const message =
-      exception instanceof HttpException
-        ? exception.getResponse() instanceof Object
-          ? (exception.getResponse() as any).message
-          : exception.message
-        : 'Internal server error';
+    const httpStatus: number = this.getExceptionHttpStatus(exception);
+    const message: string = this.getExceptionMessage(exception);
 
     const requestId = request?.requestId || null;
 
@@ -46,7 +37,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
         timestamp: new Date().toISOString(),
         requestPath: `${httpAdapter.getRequestMethod(request)} - ${httpAdapter.getRequestUrl(request)}`,
         requestId: requestId,
-        refId: randomPrefixUUID("error")
+        refId: randomPrefixUUID('error'),
       },
     };
 
@@ -57,5 +48,25 @@ export class AllExceptionsFilter implements ExceptionFilter {
     );
 
     httpAdapter.reply(response, responseBody, httpStatus);
+  }
+
+  private getExceptionHttpStatus(exception: any): number {
+    if (exception instanceof HttpException) {
+      return exception.getStatus();
+    }
+
+    return HttpStatus.INTERNAL_SERVER_ERROR;
+  }
+
+  private getExceptionMessage(exception: any): string {
+    if (exception instanceof HttpException) {
+      return exception.message;
+    }
+
+    if (exception instanceof Error) {
+      return exception.message;
+    }
+
+    return "Internal Server Error";
   }
 }
