@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import { Logger } from 'src/logger/logger.service';
+import { randomPrefixUUID } from 'src/shared/utils/generators/random-prefix-uuid.generator';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -45,6 +46,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
         timestamp: new Date().toISOString(),
         requestPath: `${httpAdapter.getRequestMethod(request)} - ${httpAdapter.getRequestUrl(request)}`,
         requestId: requestId,
+        refId: randomPrefixUUID("error")
       },
     };
 
