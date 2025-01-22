@@ -1,20 +1,13 @@
-import {
-  ArgumentsHost,
-  Catch,
-  ExceptionFilter,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
-import { Logger } from 'src/logger/logger.service';
-import { randomPrefixUUID } from 'src/shared/utils/generators/random-prefix-uuid.generator';
+import {
+  getExceptionHttpStatus,
+  getExceptionMessage,
+} from 'src/shared/utils/exception.utils';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-  constructor(
-    private readonly httpAdapterHost: HttpAdapterHost,
-    private readonly logger: Logger,
-  ) {}
+  constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
 
   catch(exception: any, host: ArgumentsHost) {
     const { httpAdapter } = this.httpAdapterHost;
@@ -23,10 +16,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const request = ctx.getRequest();
     const response = ctx.getResponse();
 
-    const httpStatus: number = this.getExceptionHttpStatus(exception);
-    const message: string = this.getExceptionMessage(exception);
+    const httpStatus: number = getExceptionHttpStatus(exception);
+    const message: string = getExceptionMessage(exception);
 
-    const requestId = request?.requestId || null;
+    const requestId = request?._requestId;
 
     const responseBody = {
       success: false,
@@ -37,41 +30,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
         timestamp: new Date().toISOString(),
         requestPath: `${httpAdapter.getRequestMethod(request)} - ${httpAdapter.getRequestUrl(request)}`,
         requestId: requestId,
-        refId: randomPrefixUUID('error'),
       },
     };
 
-    this.logger.error(
-      { ...responseBody.error, statusCode: httpStatus },
-      exception?.stack,
-      AllExceptionsFilter.name,
-    );
-
     httpAdapter.reply(response, responseBody, httpStatus);
-  }
-
-  private getExceptionHttpStatus(exception: any): number {
-    if (exception instanceof HttpException) {
-      return exception.getStatus();
-    }
-
-    return HttpStatus.INTERNAL_SERVER_ERROR;
-  }
-
-  private getExceptionMessage(exception: any): string {
-    if (exception instanceof HttpException) {
-      const responseError: string | Record<string, any> = exception.getResponse();
-      if (typeof responseError === "string") {
-        return responseError;
-      } else {
-        return responseError?.message;
-      }
-    }
-
-    if (exception instanceof Error) {
-      return exception.message;
-    }
-
-    return "Internal Server Error";
   }
 }

@@ -1,72 +1,64 @@
 import {
   CallHandler,
   ExecutionContext,
-  HttpException,
-  HttpStatus,
   Injectable,
-  NestInterceptor,
+  NestInterceptor
 } from '@nestjs/common';
-import { Request, Response } from 'express';
-import { catchError, Observable, tap } from 'rxjs';
+import { Request } from 'express';
+import { catchError, Observable, tap, throwError } from 'rxjs';
 import { Logger } from 'src/logger/logger.service';
+import { getExceptionHttpStatus, getExceptionMessage } from 'src/shared/utils/exception.utils';
 
 @Injectable()
 export class LoggerInterceptor implements NestInterceptor {
-  constructor(private readonly logger: Logger) {
-    this.logger.setContext(LoggerInterceptor.name);
-  }
+  constructor(private readonly logger: Logger) {}
 
   intercept(
     context: ExecutionContext,
     next: CallHandler<any>,
   ): Observable<any> | Promise<Observable<any>> {
     const request = context.switchToHttp().getRequest<Request>();
-    const response = context.switchToHttp().getResponse<Response>();
-    const startTime = Date.now();
 
-    const requestId = request?.requestId;
+    const requestId = request?._requestId;
 
-    this.logger.log({
-      request: {
-        requestId,
-        method: request.method,
-        url: request.originalUrl,
-        headers: this.sanitize(request.headers),
-        body: this.sanitize(request.body),
-        query: request.query,
-      },
-    });
+    const requestInfo = {
+      requestId,
+      method: request.method,
+      url: request.originalUrl,
+      headers: this.sanitize(request.headers),
+      body: this.sanitize(request.body),
+      query: request.query,
+    };
 
     return next.handle().pipe(
-      tap(() => {
-        const duration = Date.now() - startTime;
+      tap((responseInfo) => {
+        this.logger.setContext(LoggerInterceptor.name);
 
-        this.logger.log({
-          response: {
-            requestId,
-            statusCode: response.statusCode,
-            durationMs: duration,
+        this.logger.log(
+          {
+            request: requestInfo,
+            response: responseInfo,
           },
-        });
+          requestId,
+        );
       }),
       catchError((error) => {
-        const duration = Date.now() - startTime;
-        const errorStatusCode =
-          error instanceof HttpException
-            ? error.getStatus()
-            : HttpStatus.INTERNAL_SERVER_ERROR;
+        this.logger.setContext(LoggerInterceptor.name);
 
-        this.logger.error({
-          error: {
-            requestId,
-            statusCode: errorStatusCode,
-            durationMs: duration,
-            errorMessage: error.message,
-            stack: error.stack,
+        this.logger.error(
+          {
+            request: requestInfo,
+            error: {
+              name: error?.name,
+              status: getExceptionHttpStatus(error),
+              message: getExceptionMessage(error)
+            },
           },
-        });
+          error.stack,
+          requestId,
+        );
 
-        throw error;
+        return throwError(() => error);
       }),
     );
   }

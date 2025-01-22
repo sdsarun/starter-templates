@@ -30,11 +30,6 @@ export class FormatResponseInterceptor implements NestInterceptor {
           data: controllerResult,
         };
 
-        this.logger.log(
-          { response: formattedResponseObject },
-          FormatResponseInterceptor.name,
-        );
-
         return formattedResponseObject;
       }),
     );
