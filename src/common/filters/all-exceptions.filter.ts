@@ -60,7 +60,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
   private getExceptionMessage(exception: any): string {
     if (exception instanceof HttpException) {
-      return exception.message;
+      const responseError: string | Record<string, any> = exception.getResponse();
+      if (typeof responseError === "string") {
+        return responseError;
+      } else {
+        return responseError?.message;
+      }
     }
 
     if (exception instanceof Error) {
