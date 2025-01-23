@@ -11,7 +11,8 @@ export async function validateDTO<T extends object>(
     if (typeof options?.onError === 'function') {
       options?.onError(errors);
     } else {
-      if (options?.throwErrorOnValidateFailed) {
+      const throwErrorOnValidateFailed: boolean = options?.throwErrorOnValidateFailed ?? true;
+      if (throwErrorOnValidateFailed) {
         throw new Error(errors.toString());
       } else {
         return errors;
