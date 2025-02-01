@@ -1,14 +1,24 @@
-import { Injectable, ValidationPipeOptions, VersioningOptions, VersioningType } from "@nestjs/common";
-import { CorsOptions, CorsOptionsDelegate } from "@nestjs/common/interfaces/external/cors-options.interface";
-import { ConfigService } from "@nestjs/config";
-import { Environment, EnvironmentVariables } from "src/shared/constants/env.constant";
+import {
+  Injectable,
+  ValidationPipeOptions,
+  VersioningOptions,
+  VersioningType,
+} from '@nestjs/common';
+import {
+  CorsOptions,
+  CorsOptionsDelegate,
+} from '@nestjs/common/interfaces/external/cors-options.interface';
+import { ConfigService } from '@nestjs/config';
+import {
+  Environment,
+  EnvironmentVariables,
+} from 'src/shared/constants/env.constant';
 
 @Injectable()
 export class ConfigurationService {
   constructor(
-    private readonly configService: ConfigService<EnvironmentVariables>
-  ) {
-  }
+    private readonly configService: ConfigService<EnvironmentVariables>,
+  ) {}
 
   get config(): ConfigService<EnvironmentVariables> {
     return this.configService;
@@ -19,9 +29,9 @@ export class ConfigurationService {
     environment: Environment;
   } {
     return {
-      environment: this.config.get("NODE_ENV") ?? Environment.Development,
-      port: this.config.get("PORT") ?? 5432,
-    }
+      environment: this.config.get('NODE_ENV') ?? Environment.Development,
+      port: this.config.get('PORT') ?? 5432,
+    };
   }
 
   get isDevelopment(): boolean {
@@ -47,11 +57,11 @@ export class ConfigurationService {
     endpointName: string;
   } {
     return {
-      title: "Example App",
-      description: "Example description.",
-      version: "0.0.1",
-      endpointName: "docs"
-    }
+      title: 'Example App',
+      description: 'Example description.',
+      version: '0.0.1',
+      endpointName: 'docs',
+    };
   }
 
   get validationPipeConfig(): ValidationPipeOptions {
@@ -61,13 +71,13 @@ export class ConfigurationService {
         enableImplicitConversion: true,
       },
       whitelist: true,
-    }
+    };
   }
 
   get versioningConfig(): VersioningOptions {
     return {
       type: VersioningType.URI,
-      defaultVersion: "1"
-    }
+      defaultVersion: '1',
+    };
   }
 }

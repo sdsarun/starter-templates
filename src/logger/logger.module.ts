@@ -1,4 +1,3 @@
-
 import { Global, Module } from '@nestjs/common';
 import { Logger } from './logger.service';
 
@@ -7,4 +6,4 @@ import { Logger } from './logger.service';
   providers: [Logger],
   exports: [Logger],
 })
-export class LoggerModule { }
+export class LoggerModule {}

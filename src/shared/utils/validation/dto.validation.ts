@@ -5,13 +5,14 @@ export async function validateDTO<T extends object>(
   dto: T,
   options?: ServiceActionOptions,
 ): Promise<ValidationError[]> {
-  const errors = await validate(dto, { whitelist: true });
+  const errors: ValidationError[] = await validate(dto, { whitelist: true });
 
-  if (errors.length) {
+  if (errors.length > 0) {
     if (typeof options?.onError === 'function') {
       options?.onError(errors);
     } else {
-      const throwErrorOnValidateFailed: boolean = options?.throwErrorOnValidateFailed ?? true;
+      const throwErrorOnValidateFailed: boolean =
+        options?.throwErrorOnValidateFailed ?? true;
       if (throwErrorOnValidateFailed) {
         throw new Error(errors.toString());
       } else {
@@ -19,4 +20,6 @@ export async function validateDTO<T extends object>(
       }
     }
   }
+
+  return [];
 }

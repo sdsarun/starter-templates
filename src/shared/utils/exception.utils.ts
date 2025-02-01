@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus } from "@nestjs/common";
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 export function getExceptionHttpStatus(exception: any): number {
   if (exception instanceof HttpException) {
@@ -11,10 +11,10 @@ export function getExceptionHttpStatus(exception: any): number {
 export function getExceptionMessage(exception: any): string {
   if (exception instanceof HttpException) {
     const responseError: string | Record<string, any> = exception.getResponse();
-    if (typeof responseError === "string") {
+    if (typeof responseError === 'string') {
       return responseError;
     } else {
-      return responseError?.message;
+      return responseError?.message as string;
     }
   }
 
@@ -22,5 +22,5 @@ export function getExceptionMessage(exception: any): string {
     return exception.message;
   }
 
-  return "Internal Server Error";
+  return 'Internal Server Error';
 }

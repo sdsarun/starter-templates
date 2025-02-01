@@ -2,12 +2,15 @@ import {
   CallHandler,
   ExecutionContext,
   Injectable,
-  NestInterceptor
+  NestInterceptor,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { Logger } from 'src/logger/logger.service';
-import { getExceptionHttpStatus, getExceptionMessage } from 'src/shared/utils/exception.utils';
+import {
+  getExceptionHttpStatus,
+  getExceptionMessage,
+} from 'src/shared/utils/exception.utils';
 
 @Injectable()
 export class LoggerInterceptor implements NestInterceptor {
@@ -42,7 +45,7 @@ export class LoggerInterceptor implements NestInterceptor {
           requestId,
         );
       }),
-      catchError((error) => {
+      catchError((error: Error) => {
         this.logger.setContext(LoggerInterceptor.name);
 
         this.logger.error(
@@ -51,10 +54,10 @@ export class LoggerInterceptor implements NestInterceptor {
             error: {
               name: error?.name,
               status: getExceptionHttpStatus(error),
-              message: getExceptionMessage(error)
+              message: getExceptionMessage(error),
             },
           },
-          error.stack,
+          error?.stack,
           requestId,
         );
 

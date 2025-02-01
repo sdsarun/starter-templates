@@ -1,4 +1,6 @@
-export const SkipFormatResponseInterceptorPropertyName = Symbol('SkipFormatResponseInterceptorPropertyName');
+export const SkipFormatResponseInterceptorPropertyName = Symbol(
+  'SkipFormatResponseInterceptorPropertyName',
+);
 
 export function SkipFormatResponseInterceptor() {
   return function (

@@ -1,9 +1,9 @@
-import { IsEnum, IsNumber, Max, Min } from "class-validator";
+import { IsEnum, IsNumber, Max, Min } from 'class-validator';
 
 export enum Environment {
-  Development = "development",
-  Production = "production",
-  Test = "test",
+  Development = 'development',
+  Production = 'production',
+  Test = 'test',
 }
 
 export class EnvironmentVariables {

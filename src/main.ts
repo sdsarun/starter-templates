@@ -18,7 +18,9 @@ async function bootstrap() {
   app.enableCors(configurationService.corsConfig);
   app.enableVersioning(configurationService.versioningConfig);
 
-  app.useGlobalPipes(new ValidationPipe(configurationService.validationPipeConfig))
+  app.useGlobalPipes(
+    new ValidationPipe(configurationService.validationPipeConfig),
+  );
 
   if (configurationService.isDevelopment) {
     const config = new DocumentBuilder()
@@ -28,10 +30,18 @@ async function bootstrap() {
       .addBearerAuth()
       .build();
     const documentFactory = () => SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup(configurationService.swaggerConfig.endpointName, app, documentFactory);
+    SwaggerModule.setup(
+      configurationService.swaggerConfig.endpointName,
+      app,
+      documentFactory,
+    );
   }
 
-  await app.listen(configurationService.appConfig.port, () => logger.log(`Application running on port ${configurationService.appConfig.port}`));
+  await app.listen(configurationService.appConfig.port, () =>
+    logger.log(
+      `Application running on port ${configurationService.appConfig.port}`,
+    ),
+  );
 }
 
 bootstrap();

@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigurationModule } from './configuration/configuration.module';
@@ -10,10 +15,7 @@ import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { ApplyRequestIdMiddleware } from './common/middlewares/apply-request-id.middleware';
 
 @Module({
-  imports: [
-    ConfigurationModule,
-    LoggerModule,
-  ],
+  imports: [ConfigurationModule, LoggerModule],
   controllers: [AppController],
   providers: [
     AppService,
@@ -27,8 +29,8 @@ import { ApplyRequestIdMiddleware } from './common/middlewares/apply-request-id.
     },
     {
       provide: APP_FILTER,
-      useClass: AllExceptionsFilter
-    }
+      useClass: AllExceptionsFilter,
+    },
   ],
 })
 export class AppModule implements NestModule {
