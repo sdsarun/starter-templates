@@ -9,6 +9,10 @@ export default {
     "./features/**/*.{js,ts,jsx,tsx,mdx}"
   ],
   theme: {
+    fontFamily: {
+      sans: ["var(--font-noto-sans-thai)", "var(--font-noto-sans)"],
+      mono: ["var(--font-noto-sans-mono)"],
+    },
     extend: {
       colors: {}
     }
