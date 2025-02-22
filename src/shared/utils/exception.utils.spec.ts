@@ -6,22 +6,22 @@ import {
 
 describe('exceptionUtils', () => {
   describe('getExceptionHttpStatus', () => {
-    it('should return status 400', () => {
+    it('should return status 400 once instance is HttpException', () => {
       const status = getExceptionHttpStatus(new HttpException('Notfound', 400));
       expect(status).toBe(400);
     });
 
-    it('should return status 401', () => {
+    it('should return status 401 once instance is HttpException', () => {
       const status = getExceptionHttpStatus(new HttpException('Notfound', 401));
       expect(status).toBe(401);
     });
 
-    it("should return 500 when instance is Error", () => {
+    it("should return 500 once instance is Error", () => {
       const status = getExceptionHttpStatus(new Error());
       expect(status).toBe(500);
     });
 
-    it('should return status 500 when not HttpException instance', () => {
+    it('should return status 500 once not HttpException instance', () => {
       const status1 = getExceptionHttpStatus({});
       const status2 = getExceptionHttpStatus('hello');
       const status3 = getExceptionHttpStatus(new Map());
@@ -43,7 +43,7 @@ describe('exceptionUtils', () => {
   });
 
   describe('getExceptionMessage', () => {
-    it('should return message when instance is HttpException or Error', () => {
+    it('should return message once instance is HttpException or Error', () => {
       const errorMessage = 'This is should got this error message';
       const message1 = getExceptionMessage(new HttpException(errorMessage, 400));
       const message2 = getExceptionMessage(new Error(errorMessage));
@@ -52,7 +52,7 @@ describe('exceptionUtils', () => {
       expect(message2).toBe(errorMessage);
     });
 
-    it("should return default 500 status message when error is not instanceof HttpException or Error", () => {
+    it("should return default internal server error once error is not instanceof HttpException", () => {
       const message1 = getExceptionMessage({});
       const message2 = getExceptionMessage('hello');
       const message3 = getExceptionMessage(new Map());
