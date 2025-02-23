@@ -6,11 +6,8 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { catchError, Observable, tap, throwError } from 'rxjs';
-import { Logger } from 'src/logger/logger.service';
-import {
-  getExceptionHttpStatus,
-  getExceptionMessage,
-} from 'src/shared/utils/exception.utils';
+import { getExceptionHttpStatus, getExceptionMessage } from '../../shared/utils/exception.utils';
+import { Logger } from '../../logger/logger.service';
 
 @Injectable()
 export class LoggerInterceptor implements NestInterceptor {
