@@ -16,8 +16,7 @@ export class FormatResponseInterceptor implements NestInterceptor {
     context: ExecutionContext,
     next: CallHandler<any>,
   ): Observable<any> | Promise<Observable<any>> {
-    const isSkip =
-      context.getHandler()[SkipFormatResponseInterceptorPropertyName];
+    const isSkip = context.getHandler()[SkipFormatResponseInterceptorPropertyName];
     if (isSkip) {
       return next.handle();
     }

@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request } from 'express';
-import { randomPrefixUUID } from 'src/shared/utils/generators/random-prefix-uuid.generator';
+import { randomPrefixUUID } from '../../shared/utils/generators/random-prefix-uuid.generator';
 
 @Injectable()
 export class ApplyRequestIdMiddleware implements NestMiddleware {

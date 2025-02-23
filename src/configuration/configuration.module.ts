@@ -1,7 +1,7 @@
 import { Global, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ConfigurationService } from './configuration.service';
-import { validateEnvironmentVariables } from 'src/shared/utils/validation/env.validation';
+import { validateEnvironmentVariables } from '../shared/utils/validation/env.validation';
 
 @Global()
 @Module({

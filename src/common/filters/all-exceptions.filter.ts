@@ -3,7 +3,7 @@ import { HttpAdapterHost } from '@nestjs/core';
 import {
   getExceptionHttpStatus,
   getExceptionMessage,
-} from 'src/shared/utils/exception.utils';
+} from '../../shared/utils/exception.utils';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {

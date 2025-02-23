@@ -1,5 +1,5 @@
 import { validate, ValidationError } from 'class-validator';
-import { ServiceActionOptions } from 'src/shared/types/service-action';
+import { ServiceActionOptions } from '../../types/service-action';
 
 export async function validateDTO<T extends object>(
   dto: T,

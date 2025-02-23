@@ -12,7 +12,7 @@ import { ConfigService } from '@nestjs/config';
 import {
   Environment,
   EnvironmentVariables,
-} from 'src/shared/constants/env.constant';
+} from '../shared/constants/env.constant';
 
 @Injectable()
 export class ConfigurationService {

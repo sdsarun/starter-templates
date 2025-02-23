@@ -1,8 +1,5 @@
 import { HttpException } from '@nestjs/common';
-import {
-  getExceptionHttpStatus,
-  getExceptionMessage,
-} from 'src/shared/utils/exception.utils';
+import { getExceptionHttpStatus, getExceptionMessage } from './exception.utils';
 
 describe('exceptionUtils', () => {
   describe('getExceptionHttpStatus', () => {

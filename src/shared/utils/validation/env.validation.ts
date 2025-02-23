@@ -1,6 +1,6 @@
 import { plainToInstance } from 'class-transformer';
 import { validateSync } from 'class-validator';
-import { EnvironmentVariables } from 'src/shared/constants/env.constant';
+import { EnvironmentVariables } from '../../constants/env.constant';
 
 export function validateEnvironmentVariables(
   config: Record<string, unknown>,
