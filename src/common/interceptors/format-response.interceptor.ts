@@ -28,8 +28,7 @@ export class FormatResponseInterceptor implements NestInterceptor {
         { message: string },
         { success: boolean; statusCode: number; message: string; data: any }
       >((controllerResult) => {
-        const message =
-          'message' in controllerResult ? controllerResult.message : 'success';
+        const message = controllerResult?.message ?? 'Success';
 
         const formattedResponseObject = {
           success: true,
