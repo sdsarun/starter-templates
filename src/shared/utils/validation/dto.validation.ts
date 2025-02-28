@@ -8,16 +8,15 @@ export async function validateDTO<T extends object>(
   const errors: ValidationError[] = await validate(dto, { whitelist: true });
 
   if (errors.length > 0) {
-    if (typeof options?.onError === 'function') {
-      options?.onError(errors);
+    if (typeof options?.onValidateDTOFailed === 'function') {
+      options?.onValidateDTOFailed(errors);
+    }
+
+    const throwErrorOnValidateFailed: boolean = options?.throwErrorOnValidateFailed ?? true;
+    if (throwErrorOnValidateFailed) {
+      throw new Error(errors.toString());
     } else {
-      const throwErrorOnValidateFailed: boolean =
-        options?.throwErrorOnValidateFailed ?? true;
-      if (throwErrorOnValidateFailed) {
-        throw new Error(errors.toString());
-      } else {
-        return errors;
-      }
+      return errors;
     }
   }
 
