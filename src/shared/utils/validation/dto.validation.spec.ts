@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { plainToInstance } from 'class-transformer';
 import { IsString } from 'class-validator';
 import { validateDTO } from './dto.validation';
@@ -13,19 +14,19 @@ describe('validateDTO', () => {
   beforeEach(() => jest.clearAllMocks());
 
   it('should throw error by default', () => {
-    expect(validateDTO(failedDTO)).rejects.toThrow(Error);
+    expect(validateDTO(failedDTO, DTO)).rejects.toThrow(Error);
   });
 
   it('should not throw error if set throwErrorOnValidateFailed to false', () => {
     expect(
-      validateDTO(failedDTO, { throwErrorOnValidateFailed: false }),
+      validateDTO(failedDTO, DTO, { throwErrorOnValidateFailed: false }),
     ).resolves.toHaveLength(1);
   });
 
   it('should call onValidateDTOFailed when validation fails', async () => {
     const onValidateDTOFailedMock = jest.fn();
 
-    await validateDTO(failedDTO, {
+    await validateDTO(failedDTO, DTO, {
       throwErrorOnValidateFailed: false,
       onValidateDTOFailed: onValidateDTOFailedMock,
     });
@@ -44,7 +45,7 @@ describe('validateDTO', () => {
 
     const onValidateDTOFailedMock = jest.fn();
 
-    const errors = await validateDTO(validDTO, {
+    const errors = await validateDTO(validDTO, ValidDTO, {
       throwErrorOnValidateFailed: false,
       onValidateDTOFailed: onValidateDTOFailedMock,
     });
@@ -55,14 +56,14 @@ describe('validateDTO', () => {
 
   it('should throw an error when throwErrorOnValidateFailed is true and validation fails', async () => {
     await expect(
-      validateDTO(failedDTO, { throwErrorOnValidateFailed: true }),
+      validateDTO(failedDTO, DTO, { throwErrorOnValidateFailed: true }),
     ).rejects.toThrow(Error);
   });
 
   it('should call onValidateDTOFailed callback with errors if validation fails and throwErrorOnValidateFailed is false', async () => {
     const onValidateDTOFailedMock = jest.fn();
 
-    await validateDTO(failedDTO, {
+    await validateDTO(failedDTO, DTO, {
       throwErrorOnValidateFailed: false,
       onValidateDTOFailed: onValidateDTOFailedMock,
     });
@@ -80,11 +81,52 @@ describe('validateDTO', () => {
 
     const onValidateDTOFailedMock = jest.fn();
 
-    await validateDTO(validDTO, {
+    await validateDTO(validDTO, ValidDTO, {
       throwErrorOnValidateFailed: false,
       onValidateDTOFailed: onValidateDTOFailedMock,
     });
 
     expect(onValidateDTOFailedMock).not.toHaveBeenCalled();
+  });
+
+  it('should pass once plain object not instance from class-validator', async () => {
+    class MockDTO {
+      @IsString()
+      property: string;
+
+      otherProperty: string | undefined;
+    }
+
+    const plainDTO: MockDTO = {
+      property: '',
+      otherProperty: undefined,
+    };
+
+    const errros = await validateDTO(plainDTO, MockDTO, {
+      throwErrorOnValidateFailed: false,
+    });
+    expect(errros).toHaveLength(0);
+  });
+
+  it('should error once plain object without class', async () => {
+    class UnknownDTO {
+      property: any;
+      otherProperty: any;
+    }
+
+    const plainDTO = {
+      property: '',
+      otherProperty: undefined,
+    };
+
+    const errros1 = await validateDTO(plainDTO, undefined as any, {
+      throwErrorOnValidateFailed: false,
+    });
+    expect(errros1.length).toBeGreaterThan(0);
+
+    const errros2 = await validateDTO(plainDTO, UnknownDTO, {
+      throwErrorOnValidateFailed: false,
+    });
+    expect(errros2.length).toBeGreaterThan(0);
   });
 });
